@@ -100,7 +100,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
---third programCREATE OR REPLACE FUNCTION cal_exp() RETURNS INTEGER AS $$
+--third program
+CREATE OR REPLACE FUNCTION cal_exp() RETURNS INTEGER AS $$
 DECLARE
     cd DATE := current_date;
     c1 CURSOR FOR SELECT * FROM people_list;

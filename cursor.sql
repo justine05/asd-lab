@@ -57,12 +57,69 @@ BEGIN
         EXIT WHEN NOT FOUND;
         INSERT INTO bank_new VALUES (rec.accno, rec.balance*0.08);
     END LOOP;      
-    CLOSE c1;  
+    CLOSE c1;  CREATE OR REPLACE FUNCTION cal_exp() RETURNS INTEGER AS $$
+DECLARE
+    cd DATE := current_date;
+    c1 CURSOR FOR SELECT * FROM people_list;
+    rec RECORD;
+    yd INT;
+BEGIN
+    OPEN c1;
+    LOOP
+        FETCH FROM c1 INTO rec;
+        EXIT WHEN NOT FOUND;
+        yd := date_part('year',age(rec.dt_joining));
+        IF yd > 10 THEN
+            INSERT INTO exp_list VALUES(rec.id,rec.name,yd);
+        END IF; 
+    END LOOP;
+    CLOSE c1;
+    RETURN 0;
+END;
+$$ LANGUAGE plpgsql;
+    RETURN 0;
+END;
+$$ LANGUAGE plpCREATE OR REPLACE FUNCTION cal_exp() RETURNS INTEGER AS $$
+DECLARE
+    cd DATE := current_date;
+    c1 CURSOR FOR SELECT * FROM people_list;
+    rec RECORD;
+    yd INT;
+BEGIN
+    OPEN c1;
+    LOOP
+        FETCH FROM c1 INTO rec;
+        EXIT WHEN NOT FOUND;
+        yd := date_part('year',age(rec.dt_joining));
+        IF yd > 10 THEN
+            INSERT INTO exp_list VALUES(rec.id,rec.name,yd);
+        END IF; 
+    END LOOP;
+    CLOSE c1;
     RETURN 0;
 END;
 $$ LANGUAGE plpgsql;
 
---third program
+--third programCREATE OR REPLACE FUNCTION cal_exp() RETURNS INTEGER AS $$
+DECLARE
+    cd DATE := current_date;
+    c1 CURSOR FOR SELECT * FROM people_list;
+    rec RECORD;
+    yd INT;
+BEGIN
+    OPEN c1;
+    LOOP
+        FETCH FROM c1 INTO rec;
+        EXIT WHEN NOT FOUND;
+        yd := date_part('year',age(rec.dt_joining));
+        IF yd > 10 THEN
+            INSERT INTO exp_list VALUES(rec.id,rec.name,yd);
+        END IF; 
+    END LOOP;
+    CLOSE c1;
+    RETURN 0;
+END;
+$$ LANGUAGE plpgsql;
 
 create table people_list(id INT, name varchar(20),dt_joining DATE,place varchar(20));
 create table exp_list(id INT, name varchar(20),exp INT);
@@ -78,10 +135,44 @@ BEGIN
     LOOP
         FETCH FROM c1 INTO rec;
         EXIT WHEN NOT FOUND;
-        yd = date_part('year',age(rec.dt_joining));
+        yd := date_part('year',age(rec.dt_joining));
         IF yd > 10 THEN
             INSERT INTO exp_list VALUES(rec.id,rec.name,yd);
         END IF; 
+    END LOOP;
+    CLOSE c1;
+    RETURN 0;
+END;
+$$ LANGUAGE plpgsql;
+
+--fouth program
+
+CREATE OR REPLACE FUNCTION updt_sal() RETURNS INTEGER AS $$
+DECLARE
+    c1 CURSOR FOR SELECT * FROM emp_list;
+    rec RECORD;
+BEGIN
+    OPEN c1;
+    LOOP
+        FETCH FROM c1 INTO rec;
+        EXIT WHEN NOT FOUND;
+        IF rec.m_sal*12 < 60000 THEN
+            UPDATE emp_list
+            SET m_sal = m_sal*1.25
+            WHERE CURRENT OF c1;
+        ELSIF rec.m_sal*12 >= 60000 AND rec.m_sal*12 < 200000 THEN
+            UPDATE emp_list
+            SET m_sal = m_sal*1.20
+            WHERE CURRENT OF c1;
+        ELSIF rec.m_sal*12 >= 200000 AND rec.m_sal*12 < 500000 THEN
+            UPDATE emp_list
+            SET m_sal = m_sal*1.15
+            WHERE CURRENT OF c1;
+        ELSIF rec.m_sal*12 >= 500000 THEN
+            UPDATE emp_list
+            SET m_sal = m_sal*1.10
+            WHERE CURRENT OF c1;
+        END IF;
     END LOOP;
     RETURN 0;
 END;

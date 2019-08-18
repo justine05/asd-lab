@@ -66,3 +66,23 @@ $$ LANGUAGE plpgsql;
 
 create table people_list(id INT, name varchar(20),dt_joining DATE,place varchar(20));
 create table exp_list(id INT, name varchar(20),exp INT);
+
+CREATE OR REPLACE FUNCTION cal_exp() RETURNS INTEGER AS $$
+DECLARE
+    cd DATE := current_date;
+    c1 CURSOR FOR SELECT * FROM people_list;
+    rec RECORD;
+    yd INT;
+BEGIN
+    OPEN c1;
+    LOOP
+        FETCH FROM c1 INTO rec;
+        EXIT WHEN NOT FOUND;
+        yd = date_part('year',age(rec.dt_joining));
+        IF yd > 10 THEN
+            INSERT INTO exp_list VALUES(rec.id,rec.name,yd);
+        END IF; 
+    END LOOP;
+    RETURN 0;
+END;
+$$ LANGUAGE plpgsql;

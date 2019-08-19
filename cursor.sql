@@ -56,50 +56,11 @@ BEGIN
         FETCH c1 INTO rec;
         EXIT WHEN NOT FOUND;
         INSERT INTO bank_new VALUES (rec.accno, rec.balance*0.08);
-    END LOOP;      
-    CLOSE c1;  CREATE OR REPLACE FUNCTION cal_exp() RETURNS INTEGER AS $$
-DECLARE
-    cd DATE := current_date;
-    c1 CURSOR FOR SELECT * FROM people_list;
-    rec RECORD;
-    yd INT;
-BEGIN
-    OPEN c1;
-    LOOP
-        FETCH FROM c1 INTO rec;
-        EXIT WHEN NOT FOUND;
-        yd := date_part('year',age(rec.dt_joining));
-        IF yd > 10 THEN
-            INSERT INTO exp_list VALUES(rec.id,rec.name,yd);
-        END IF; 
-    END LOOP;
-    CLOSE c1;
+    END LOOP; 
     RETURN 0;
+    CLOSE c1;  
 END;
 $$ LANGUAGE plpgsql;
-    RETURN 0;
-END;
-$$ LANGUAGE plpCREATE OR REPLACE FUNCTION cal_exp() RETURNS INTEGER AS $$
-DECLARE
-    cd DATE := current_date;
-    c1 CURSOR FOR SELECT * FROM people_list;
-    rec RECORD;
-    yd INT;
-BEGIN
-    OPEN c1;
-    LOOP
-        FETCH FROM c1 INTO rec;
-        EXIT WHEN NOT FOUND;
-        yd := date_part('year',age(rec.dt_joining));
-        IF yd > 10 THEN
-            INSERT INTO exp_list VALUES(rec.id,rec.name,yd);
-        END IF; 
-    END LOOP;
-    CLOSE c1;
-    RETURN 0;
-END;
-$$ LANGUAGE plpgsql;
-
 --third program
 CREATE OR REPLACE FUNCTION cal_exp() RETURNS INTEGER AS $$
 DECLARE

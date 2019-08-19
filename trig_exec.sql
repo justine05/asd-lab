@@ -72,4 +72,49 @@ EXECUTE PROCEDURE del_upd();
 
 --fifth problem
 
-CREATE OR REPLACE FUNCTION div(a integer, b integer) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION div(a integer, b integer) RETURNS VOID AS $$
+BEGIN
+    IF b = 0 THEN
+        RAISE EXCEPTION  USING errcode = 22012;
+    END IF;
+    RAISE NOTICE 'The quotient is = %',a/b;
+    EXCEPTION
+        WHEN SQLSTATE '22012' THEN
+            RAISE NOTICE 'Divide by zero error';
+END;
+$$ LANGUAGE plpgsql;
+
+--sixth problem
+
+CREATE OR REPLACE FUNCTION ret(a integer) RETURNS VOID AS $$
+DECLARE
+name VARCHAR(30); 
+BEGIN
+    SELECT empname INTO STRICT name FROM emp_details WHERE empid = a;
+    RAISE NOTICE 'Name is = %',name;    
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RAISE NOTICE 'No data error';
+END;
+$$ LANGUAGE plpgsql;
+
+--seventh problem
+
+CREATE TABLE ebill (
+    cname VARCHAR(20),
+    prevreading INTEGER,
+    currreading INTEGER
+);
+
+CREATE OR REPLACE FUNCTION add_ebill(name VARCHAR(20), p integer, c integer) RETURNS VOID AS $$
+BEGIN
+    IF p = c THEN
+        RAISE EXCEPTION USING errcode = '50001';
+    END IF;
+    INSERT INTO ebill VALUES (name,p,c);
+    RAISE NOTICE 'Statement processed';    
+    EXCEPTION
+        WHEN SQLSTATE '50001' THEN
+            RAISE NOTICE 'Data Entry Error';
+END;
+$$ LANGUAGE plpgsql;

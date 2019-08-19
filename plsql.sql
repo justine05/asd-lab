@@ -118,12 +118,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+--fourth problem
+
 CREATE TABLE circle_area(
     raduis INTEGER,
     area FLOAT
 );
 
---fourth problem
 
 CREATE OR REPLACE FUNCTION calc_area(n integer) RETURNS INTEGER AS $$
 DECLARE

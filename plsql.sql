@@ -1,14 +1,15 @@
 --first program
 
-CREATE FUNCTION prime(n integer) RETURNS INTEGER AS $$
+CREATE OR REPLACE FUNCTION prime(n integer) RETURNS INTEGER AS $$
 DECLARE
-    num integer := n;
+    num integer := 0;
     c integer := 2;
     flag integer := 0;
     temp integer;
+    prime integer := 0;
 BEGIN
     LOOP
-        EXIT WHEN c = n-1;
+        EXIT WHEN prime = n;
         temp := 2;
         flag = 0;
         LOOP
@@ -20,6 +21,7 @@ BEGIN
             temp := temp +1;
         END LOOP;
         IF flag = 0 THEN
+                prime := prime + 1;
             RAISE NOTICE '% is prime',c;
         END IF;
         c := c+1;
